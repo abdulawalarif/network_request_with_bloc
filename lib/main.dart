@@ -17,13 +17,12 @@ void main() {
   runApp(
     MultiBlocProvider(
       providers: [
-          BlocProvider<UsersBloc>(
-         create: (context) => UsersBloc(),
-         ),
-         BlocProvider<PostsBloc>(
-            create: (context) => PostsBloc(),
-          ),
-
+        BlocProvider<UsersBloc>(
+          create: (context) => UsersBloc(),
+        ),
+        BlocProvider<PostsBloc>(
+          create: (context) => PostsBloc(),
+        ),
       ],
       child: const MaterialApp(
         title: 'Flutter Demo',
@@ -72,6 +71,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               TextButton(
                 onPressed: () {
+
                   context.read<UsersBloc>().add(
                         const LoadUsersAction(
                           url: loadAllUsers,
@@ -85,6 +85,8 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 onPressed: () {
+
+
                   context.read<PostsBloc>().add(
                         const LoadPostsAction(
                           url: loadAllPosts,
@@ -96,8 +98,6 @@ class _HomePageState extends State<HomePage> {
                   'Load Posts',
                 ),
               ),
-            
-            
             ],
           ),
           BlocBuilder<UsersBloc, FetchUsersResult?>(
@@ -127,19 +127,26 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-
-
-
-             BlocBuilder<PostsBloc, FetchPostsResult?>(
+         
+         
+          BlocBuilder<PostsBloc, FetchPostsResult?>(
             buildWhen: (previousResult, currentResult) {
               return previousResult?.posts != currentResult?.posts;
             },
             builder: (context, fetchResult) {
+          
               fetchResult?.log();
               final posts = fetchResult?.posts;
 
               if (posts == null) {
                 return const SizedBox();
+              }
+              if(fetchResult!.loadinPosts){
+                  return const Center(
+                    child:  CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  );
               }
 
               return Expanded(
@@ -157,7 +164,6 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-        
         ],
       ),
     );

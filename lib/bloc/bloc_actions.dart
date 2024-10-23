@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart' show immutable;
 import 'package:network_request_with_bloc/models/user_model.dart';
 
 import '../models/post_model.dart';
- 
+
 const loadAllUsers = 'https://jsonplaceholder.typicode.com/users';
 const loadAllPosts = 'https://jsonplaceholder.typicode.com/posts';
 

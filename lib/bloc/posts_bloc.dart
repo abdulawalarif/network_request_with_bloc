@@ -1,17 +1,24 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:network_request_with_bloc/bloc/bloc_actions.dart';
 import 'package:network_request_with_bloc/bloc/users_bloc.dart';
 import '../models/post_model.dart';
-import 'bloc_actions.dart';
 
 @immutable
 class FetchPostsResult {
   final Iterable<PostModel> posts;
   final bool isRetrievedFromCache;
+  final bool loadinPosts;
 
   const FetchPostsResult({
     required this.posts,
     required this.isRetrievedFromCache,
+    required this.loadinPosts,
+  });
+  const FetchPostsResult.copyWith({
+    required this.posts,
+    required this.isRetrievedFromCache,
+    required this.loadinPosts,
   });
 
   @override
@@ -32,6 +39,7 @@ class FetchPostsResult {
 
 class PostsBloc extends Bloc<LoadAction, FetchPostsResult?> {
   final Map<String, Iterable<PostModel>> _cache = {};
+
   PostsBloc() : super(null) {
     on<LoadPostsAction>(
       (event, emit) async {
@@ -42,9 +50,18 @@ class PostsBloc extends Bloc<LoadAction, FetchPostsResult?> {
           final result = FetchPostsResult(
             posts: cachedPosts,
             isRetrievedFromCache: true,
+            loadinPosts: false,
           );
           emit(result);
         } else {
+          emit(
+            const FetchPostsResult(
+              isRetrievedFromCache: true,
+              loadinPosts: true,
+              posts: [],
+            ),
+          );
+
           final loader = event.loader;
 
           final posts = await loader(url);
@@ -52,7 +69,9 @@ class PostsBloc extends Bloc<LoadAction, FetchPostsResult?> {
           final result = FetchPostsResult(
             posts: posts,
             isRetrievedFromCache: false,
+            loadinPosts: false,
           );
+
           emit(result);
         }
       },
