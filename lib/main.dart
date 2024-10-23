@@ -27,7 +27,10 @@ void main() {
       child: const MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
-        home: HomePage(),
+        home: DefaultTabController(
+          length: 2,
+          child: HomePage(),
+        ),
       ),
     ),
   );
@@ -67,11 +70,10 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          Row(
-            children: [
-              TextButton(
-                onPressed: () {
-
+          TabBar(
+            tabs: [
+              GestureDetector(
+                onTap: () {
                   context.read<UsersBloc>().add(
                         const LoadUsersAction(
                           url: loadAllUsers,
@@ -79,14 +81,13 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                 },
-                child: const Text(
-                  'Load Users',
+                child: const Tab(
+                  icon: Icon(Icons.person_2_outlined),
+                  text: 'Load Users',
                 ),
               ),
-              TextButton(
-                onPressed: () {
-
-
+              GestureDetector(
+                onTap: () {
                   context.read<PostsBloc>().add(
                         const LoadPostsAction(
                           url: loadAllPosts,
@@ -94,75 +95,85 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                 },
-                child: const Text(
-                  'Load Posts',
+                child: const Tab(
+                  icon: Icon(Icons.event_note_sharp),
+                  text: 'Load Posts',
                 ),
               ),
             ],
           ),
-          BlocBuilder<UsersBloc, FetchUsersResult?>(
-            buildWhen: (previousResult, currentResult) {
-              return previousResult?.persons != currentResult?.persons;
-            },
-            builder: (context, fetchResult) {
-              fetchResult?.log();
-              final persons = fetchResult?.persons;
+          Expanded(
+            child: TabBarView(
+              children: [
+                BlocBuilder<UsersBloc, FetchUsersResult?>(
+                  buildWhen: (previousResult, currentResult) {
+                    return previousResult?.users != currentResult?.users;
+                  },
+                  builder: (context, fetchResult) {
+                    fetchResult?.log();
+                    final persons = fetchResult?.users;
 
-              if (persons == null) {
-                return const SizedBox();
-              }
+                    if (persons == null) {
+                      return const SizedBox();
+                    }
+                    if (fetchResult!.loadinUsers) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
+                      );
+                    }
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: persons.length,
+                        itemBuilder: (context, index) {
+                          final person = persons[index]!;
 
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: persons.length,
-                  itemBuilder: (context, index) {
-                    final person = persons[index]!;
-
-                    return ListTile(
-                      title: Text(person.name.toString()),
-                      subtitle: Text(person.email.toString()),
+                          return ListTile(
+                            title: Text(person.name.toString()),
+                            subtitle: Text(person.email.toString()),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
-              );
-            },
-          ),
-         
-         
-          BlocBuilder<PostsBloc, FetchPostsResult?>(
-            buildWhen: (previousResult, currentResult) {
-              return previousResult?.posts != currentResult?.posts;
-            },
-            builder: (context, fetchResult) {
-          
-              fetchResult?.log();
-              final posts = fetchResult?.posts;
+                BlocBuilder<PostsBloc, FetchPostsResult?>(
+                  buildWhen: (previousResult, currentResult) {
+                    return previousResult?.posts != currentResult?.posts;
+                  },
+                  builder: (context, fetchResult) {
+                    fetchResult?.log();
+                    final posts = fetchResult?.posts;
 
-              if (posts == null) {
-                return const SizedBox();
-              }
-              if(fetchResult!.loadinPosts){
-                  return const Center(
-                    child:  CircularProgressIndicator(
-                      color: Colors.black,
-                    ),
-                  );
-              }
+                    if (posts == null) {
+                      return const SizedBox();
+                    }
+                    if (fetchResult!.loadinPosts) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                        ),
+                      );
+                    }
 
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) {
-                    final post = posts[index]!;
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index]!;
 
-                    return ListTile(
-                      title: Text(post.title.toString()),
-                      subtitle: Text(post.body.toString()),
+                          return ListTile(
+                            title: Text(post.title.toString()),
+                            subtitle: Text(post.body.toString()),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ],
       ),

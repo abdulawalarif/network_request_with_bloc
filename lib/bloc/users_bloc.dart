@@ -11,25 +11,27 @@ extension IsEqualToIgnoringOrdering<T> on Iterable<T> {
 
 @immutable
 class FetchUsersResult {
-  final Iterable<UserModel> persons;
+  final Iterable<UserModel> users;
   final bool isRetrievedFromCache;
+  final bool loadinUsers;
   const FetchUsersResult({
-    required this.persons,
+    required this.users,
     required this.isRetrievedFromCache,
+    required this.loadinUsers,
   });
 
   @override
   String toString() =>
-      'FetchResult (isRetrievedFromCache = $isRetrievedFromCache, persons = $persons)';
+      'FetchResult (isRetrievedFromCache = $isRetrievedFromCache, persons = $users)';
 
   @override
   bool operator ==(covariant FetchUsersResult other) =>
-      persons.isEqualToIgnoringOrdering(other.persons) &&
+      users.isEqualToIgnoringOrdering(other.users) &&
       isRetrievedFromCache == other.isRetrievedFromCache;
 
   @override
   int get hashCode => Object.hash(
-        persons,
+        users,
         isRetrievedFromCache,
       );
 }
@@ -42,19 +44,28 @@ class UsersBloc extends Bloc<LoadAction, FetchUsersResult?> {
         final url = event.url;
         if (_cache.containsKey(url)) {
           // we have the value in the cache
-          final cachedPersons = _cache[url]!;
+          final cachedUsers = _cache[url]!;
           final result = FetchUsersResult(
-            persons: cachedPersons,
+            users: cachedUsers,
+            loadinUsers: false,
             isRetrievedFromCache: true,
           );
           emit(result);
         } else {
+          emit(
+            const FetchUsersResult(
+              isRetrievedFromCache: true,
+              loadinUsers: true,
+              users: [],
+            ),
+          );
           final loader = event.loader;
-          final persons = await loader(url);
-          _cache[url] = persons;
+          final users = await loader(url);
+          _cache[url] = users;
           final result = FetchUsersResult(
-            persons: persons,
+            users: users,
             isRetrievedFromCache: false,
+            loadinUsers: false,
           );
           emit(result);
         }
