@@ -17,7 +17,6 @@ void main() {
   runApp(
     MultiBlocProvider(
       providers: [
-
           BlocProvider<UsersBloc>(
          create: (context) => UsersBloc(),
          ),
@@ -29,7 +28,7 @@ void main() {
       child: const MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
-        home: const HomePage(),
+        home: HomePage(),
       ),
     ),
   );
@@ -128,6 +127,37 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
+
+
+
+             BlocBuilder<PostsBloc, FetchPostsResult?>(
+            buildWhen: (previousResult, currentResult) {
+              return previousResult?.posts != currentResult?.posts;
+            },
+            builder: (context, fetchResult) {
+              fetchResult?.log();
+              final posts = fetchResult?.posts;
+
+              if (posts == null) {
+                return const SizedBox();
+              }
+
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index]!;
+
+                    return ListTile(
+                      title: Text(post.title.toString()),
+                      subtitle: Text(post.body.toString()),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        
         ],
       ),
     );
