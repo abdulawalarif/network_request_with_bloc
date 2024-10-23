@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:network_request_with_bloc/bloc/bloc_actions.dart';
-import 'package:network_request_with_bloc/bloc/person.dart';
+import 'package:network_request_with_bloc/models/user_model.dart';
+//import 'package:network_request_with_bloc/bloc/person.dart';
 
 extension IsEqualToIgnoringOrdering<T> on Iterable<T> {
   bool isEqualToIgnoringOrdering(Iterable<T> other) =>
@@ -11,7 +12,7 @@ extension IsEqualToIgnoringOrdering<T> on Iterable<T> {
 
 @immutable
 class FetchResult {
-  final Iterable<Person> persons;
+  final Iterable<UserModel> persons;
   final bool isRetrievedFromCache;
   const FetchResult({
     required this.persons,
@@ -35,7 +36,7 @@ class FetchResult {
 }
 
 class PersonsBloc extends Bloc<LoadAction, FetchResult?> {
-  final Map<String, Iterable<Person>> _cache = {};
+  final Map<String, Iterable<UserModel>> _cache = {};
   PersonsBloc() : super(null) {
     on<LoadPersonsAction>(
       (event, emit) async {
