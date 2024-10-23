@@ -70,35 +70,15 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          TabBar(
+          const TabBar(
             tabs: [
-              GestureDetector(
-                onTap: () {
-                  context.read<UsersBloc>().add(
-                        const LoadUsersAction(
-                          url: loadAllUsers,
-                          loader: getUsers,
-                        ),
-                      );
-                },
-                child: const Tab(
-                  icon: Icon(Icons.person_2_outlined),
-                  text: 'Load Users',
-                ),
+                Tab(
+                icon: Icon(Icons.person_2_outlined),
+                text: 'Users list',
               ),
-              GestureDetector(
-                onTap: () {
-                  context.read<PostsBloc>().add(
-                        const LoadPostsAction(
-                          url: loadAllPosts,
-                          loader: getPosts,
-                        ),
-                      );
-                },
-                child: const Tab(
-                  icon: Icon(Icons.event_note_sharp),
-                  text: 'Load Posts',
-                ),
+                Tab(
+                icon: Icon(Icons.event_note_sharp),
+                text: 'Posts list',
               ),
             ],
           ),
@@ -111,12 +91,24 @@ class _HomePageState extends State<HomePage> {
                   },
                   builder: (context, fetchResult) {
                     fetchResult?.log();
-                    final persons = fetchResult?.users;
+                    final users = fetchResult?.users;
 
-                    if (persons == null) {
-                      return const SizedBox();
+                    if (users == null) {
+                      return Center(
+                        child: TextButton(
+                          onPressed: () {
+                            context.read<UsersBloc>().add(
+                                  const LoadUsersAction(
+                                    url: loadAllUsers,
+                                    loader: getUsers,
+                                  ),
+                                );
+                          },
+                          child: const Text('Load users from network'),
+                        ),
+                      );
                     }
-                    if (fetchResult!.loadinUsers) {
+                    if (fetchResult!.loadinWait) {
                       return const Center(
                         child: CircularProgressIndicator(
                           color: Colors.black,
@@ -125,9 +117,9 @@ class _HomePageState extends State<HomePage> {
                     }
                     return Expanded(
                       child: ListView.builder(
-                        itemCount: persons.length,
+                        itemCount: users.length,
                         itemBuilder: (context, index) {
-                          final person = persons[index]!;
+                          final person = users[index]!;
 
                           return ListTile(
                             title: Text(person.name.toString()),
@@ -147,9 +139,22 @@ class _HomePageState extends State<HomePage> {
                     final posts = fetchResult?.posts;
 
                     if (posts == null) {
-                      return const SizedBox();
+                      return Center(
+                        child: TextButton(
+                          onPressed: () {
+                            context.read<PostsBloc>().add(
+                                  const LoadPostsAction(
+                                    url: loadAllPosts,
+                                    loader: getPosts,
+                                  ),
+                                );
+                          },
+                          child: const Text('Load posts from network'),
+                        ),
+                      );
                     }
-                    if (fetchResult!.loadinPosts) {
+
+                    if (fetchResult!.loadinWait) {
                       return const Center(
                         child: CircularProgressIndicator(
                           color: Colors.black,
@@ -180,3 +185,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+

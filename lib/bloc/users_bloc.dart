@@ -13,11 +13,11 @@ extension IsEqualToIgnoringOrdering<T> on Iterable<T> {
 class FetchUsersResult {
   final Iterable<UserModel> users;
   final bool isRetrievedFromCache;
-  final bool loadinUsers;
+  final bool loadinWait;
   const FetchUsersResult({
     required this.users,
     required this.isRetrievedFromCache,
-    required this.loadinUsers,
+    required this.loadinWait,
   });
 
   @override
@@ -47,7 +47,7 @@ class UsersBloc extends Bloc<LoadAction, FetchUsersResult?> {
           final cachedUsers = _cache[url]!;
           final result = FetchUsersResult(
             users: cachedUsers,
-            loadinUsers: false,
+            loadinWait: false,
             isRetrievedFromCache: true,
           );
           emit(result);
@@ -55,7 +55,7 @@ class UsersBloc extends Bloc<LoadAction, FetchUsersResult?> {
           emit(
             const FetchUsersResult(
               isRetrievedFromCache: true,
-              loadinUsers: true,
+              loadinWait: true,
               users: [],
             ),
           );
@@ -65,7 +65,7 @@ class UsersBloc extends Bloc<LoadAction, FetchUsersResult?> {
           final result = FetchUsersResult(
             users: users,
             isRetrievedFromCache: false,
-            loadinUsers: false,
+            loadinWait: false,
           );
           emit(result);
         }

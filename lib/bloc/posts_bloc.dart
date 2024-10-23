@@ -8,17 +8,17 @@ import '../models/post_model.dart';
 class FetchPostsResult {
   final Iterable<PostModel> posts;
   final bool isRetrievedFromCache;
-  final bool loadinPosts;
+  final bool loadinWait;
 
   const FetchPostsResult({
     required this.posts,
     required this.isRetrievedFromCache,
-    required this.loadinPosts,
+    required this.loadinWait,
   });
   const FetchPostsResult.copyWith({
     required this.posts,
     required this.isRetrievedFromCache,
-    required this.loadinPosts,
+    required this.loadinWait,
   });
 
   @override
@@ -50,14 +50,14 @@ class PostsBloc extends Bloc<LoadAction, FetchPostsResult?> {
           final result = FetchPostsResult(
             posts: cachedPosts,
             isRetrievedFromCache: true,
-            loadinPosts: false,
+            loadinWait: false,
           );
           emit(result);
         } else {
           emit(
             const FetchPostsResult(
               isRetrievedFromCache: true,
-              loadinPosts: true,
+              loadinWait: true,
               posts: [],
             ),
           );
@@ -69,7 +69,7 @@ class PostsBloc extends Bloc<LoadAction, FetchPostsResult?> {
           final result = FetchPostsResult(
             posts: posts,
             isRetrievedFromCache: false,
-            loadinPosts: false,
+            loadinWait: false,
           );
 
           emit(result);
