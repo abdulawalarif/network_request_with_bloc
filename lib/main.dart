@@ -3,11 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:network_request_with_bloc/bloc/bloc_actions.dart';
-//import 'package:network_request_with_bloc/bloc/person.dart';
 import 'dart:developer' as devtools show log;
-
-import 'package:network_request_with_bloc/bloc/persons_bloc.dart';
-
+import 'package:network_request_with_bloc/bloc/users_bloc.dart';
+import 'bloc/posts_bloc.dart';
 import 'models/post_model.dart';
 import 'models/user_model.dart';
 
@@ -15,15 +13,23 @@ extension Log on Object {
   void log() => devtools.log(toString());
 }
 
-
 void main() {
   runApp(
-    MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      home: BlocProvider(
-        create: (_) => PersonsBloc(),
-        child: const HomePage(),
+    MultiBlocProvider(
+      providers: [
+
+          BlocProvider<UsersBloc>(
+         create: (context) => UsersBloc(),
+         ),
+         BlocProvider<PostsBloc>(
+            create: (context) => PostsBloc(),
+          ),
+
+      ],
+      child: const MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        home: const HomePage(),
       ),
     ),
   );
@@ -36,8 +42,7 @@ Future<Iterable<UserModel>> getUsers(String url) => HttpClient()
     .then((str) => json.decode(str) as List<dynamic>)
     .then((list) => list.map((e) => UserModel.fromJson(e)));
 
-
-    Future<Iterable<PostModel>> getPosts(String url) => HttpClient()
+Future<Iterable<PostModel>> getPosts(String url) => HttpClient()
     .getUrl(Uri.parse(url))
     .then((req) => req.close())
     .then((resp) => resp.transform(utf8.decoder).join())
@@ -68,9 +73,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               TextButton(
                 onPressed: () {
-                  
-                  context.read<PersonsBloc>().add(
-                        const LoadPersonsAction(
+                  context.read<UsersBloc>().add(
+                        const LoadUsersAction(
                           url: loadAllUsers,
                           loader: getUsers,
                         ),
@@ -80,22 +84,24 @@ class _HomePageState extends State<HomePage> {
                   'Load Users',
                 ),
               ),
-              // TextButton(
-              //   onPressed: () {
-              //     context.read<PersonsBloc>().add(
-              //           const LoadPersonsAction(
-              //             url: loadAllPosts,
-              //             loader: getPosts,
-              //           ),
-              //         );
-              //   },
-              //   child: const Text(
-              //     'Load Posts',
-              //   ),
-              // ),
+              TextButton(
+                onPressed: () {
+                  context.read<PostsBloc>().add(
+                        const LoadPostsAction(
+                          url: loadAllPosts,
+                          loader: getPosts,
+                        ),
+                      );
+                },
+                child: const Text(
+                  'Load Posts',
+                ),
+              ),
+            
+            
             ],
           ),
-          BlocBuilder<PersonsBloc, FetchResult?>(
+          BlocBuilder<UsersBloc, FetchUsersResult?>(
             buildWhen: (previousResult, currentResult) {
               return previousResult?.persons != currentResult?.persons;
             },
