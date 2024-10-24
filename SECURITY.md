@@ -8,8 +8,8 @@ We provide security updates for the following versions of our Flutter project:
 | ------- | ------------------ |
 | 2.0.0   | :white_check_mark: |
 | 1.5.0   | :x:                |
-| 1.0.1   | :white_check_mark: |
-| < 1.0.0   | :x:                |
+| 1.0.1   | :x:                |
+| < 1.0.0 | :x:                |
 
 ## Reporting a Vulnerability
 
