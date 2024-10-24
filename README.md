@@ -5,6 +5,8 @@
 
 **The project provides a solid foundation for developers looking to implement network-based features in their applications using Flutter’s Bloc architecture. It includes features like data loading from multiple sources, caching of responses, and efficient UI updates when data changes.**
 
+
+
 ## Features
 * **Data Fetching with Bloc:** The app loads data from APIs, showcasing how to integrate network requests within the Bloc architecture for state management.
 * **Caching Mechanism:** Caching is used to store the fetched data, ensuring that subsequent requests for the same data are served from memory, avoiding additional network calls and improving performance.
@@ -26,8 +28,11 @@
      
  
 
-  
+ 
+ <img src="demo/bloc.gif" width="50%" alt="Demo of this application" />
 
+
+ 
 
 ## Run Locally
 
