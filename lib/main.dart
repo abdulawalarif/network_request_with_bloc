@@ -6,8 +6,9 @@ import 'package:network_request_with_bloc/bloc/bloc_actions.dart';
 import 'dart:developer' as devtools show log;
 import 'package:network_request_with_bloc/bloc/users_bloc.dart';
 import 'bloc/posts_bloc.dart';
-import 'models/post_model.dart';
-import 'models/user_model.dart';
+import 'models/post_model/post_model.dart';
+import 'models/user_model/user_model.dart';
+ 
 
 extension Log on Object {
   void log() => devtools.log(toString());
@@ -185,5 +186,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-

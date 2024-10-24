@@ -9,9 +9,13 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   flutter_bloc: ^8.1.6
+  json_annotation: ^4.9.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  freezed: ^2.5.7
+  build_runner: ^2.4.13
+  json_serializable: ^6.8.0
 flutter:
   uses-material-design: true

@@ -2,8 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:network_request_with_bloc/bloc/bloc_actions.dart';
 import 'package:network_request_with_bloc/bloc/users_bloc.dart';
-import '../models/post_model.dart';
 
+import '../models/post_model/post_model.dart';
+ 
 @immutable
 class FetchPostsResult {
   final Iterable<PostModel> posts;
